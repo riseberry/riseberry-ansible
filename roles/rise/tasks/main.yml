@@ -1,20 +1,28 @@
 ---
+- name: locate rise src
+  local_action: shell go list -f $(echo '((.Dir))' | tr '(' '{' | tr ')' '} ') {{rise_go_pkg}}
+  register: rise_src
 - name: cross compile binary
-  local_action: shell go build -o build/rise github.com/felixge/rise
+  local_action: shell go build -o build/rise {{rise_go_pkg}}
   environment:
-    GOOS: linux
-    GOARCH: "{% if ansible_architecture == 'armv6l' %}arm{% else %}amd64{% endif %}" 
+    GOOS: "{{rise_go_os}}"
+    GOARCH: "{{rise_go_arch}}"
 - name: upload binary
-  copy: src=build/rise dest=/usr/local/bin/rise mode="u=rwx,g=rx,o=rx"
+  copy: src=build/rise dest={{rise_bin_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
+- name: create {{rise_public_path}}
+  file: path={{rise_public_path}} state=directory mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: rsync assets
+  synchronize: src={{rise_src.stdout}}/public/ dest={{rise_public_path}}/ rsync_path="sudo rsync"
 - name: write init.d daemon script
-  template: src=init.d-rise.j2 dest=/etc/init.d/rise mode="u=rwx,g=rx,o=rx"
+  template: src=init.d-rise.j2 dest={{rise_init_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
-- name: create /etc/rise
-  file: path=/etc/rise state=directory mode="u=rwx,g=rx,o=rx"
+- name: create {{rise_run_path|dirname}}
+  file: path={{rise_run_path|dirname}} state=directory mode="u=rwx,g=rx,o=rx"
   sudo: true
 - name: write run script
-  template: src=rise-run.bash dest=/etc/rise/run.bash mode="u=rwx,g=rx,o=rx"
+  template: src=rise-run.bash.j2 dest={{rise_run_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
 - command: /bin/true
   notify: restart rise

@@ -15,11 +15,11 @@
 case "$1" in 
     start)
         echo "Starting rise"
-        nohup /etc/rise/run.bash >> /var/log/rise.log 2>&1 &
+        nohup {{rise_run_path}} >> {{rise_log_path}} 2>&1 &
         ;;
     stop)
         echo "Stopping rise"
-        sudo pkill -9 -g $(ps -p $(pgrep -f /usr/local/bin/rise) -o pgid=)
+        sudo pkill -9 -g $(ps -p $(pgrep -f {{rise_bin_path}}) -o pgid=)
         ;;
     *)
         echo "Usage: /etc/init.d/rise start|stop"

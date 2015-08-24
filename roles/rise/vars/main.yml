@@ -1,0 +1,9 @@
+---
+rise_go_os: linux
+rise_go_arch: "{% if ansible_architecture == 'armv6l' %}arm{% else %}amd64{% endif %}" 
+rise_go_pkg: github.com/felixge/rise
+rise_bin_path: /usr/local/bin/rise
+rise_log_path: /var/log/rise.log
+rise_init_path: /etc/init.d/rise
+rise_run_path: /etc/rise/run.bash
+rise_public_path: /var/run/rise/public
