@@ -1,14 +1,14 @@
 ---
-- name: locate {{rispberryd_bin}} src
+- name: locate risberryd src
   local_action: shell go list -f $(echo '((.Dir))' | tr '(' '{' | tr ')' '} ') {{riseberryd_go_pkg}}
   register: risberryd_src
-- name: cross compile {{riseberryd_bin}}
-  local_action: shell go build -o {{riseberryd_build_path}}/{{riseberryd_bin}} {{riseberryd_go_pkg}}
+- name: cross compile risberryd
+  local_action: shell go build -o {{riseberryd_build_path}}/riseberryd {{riseberryd_go_pkg}}
   environment:
     GOOS: "{{riseberryd_go_os}}"
     GOARCH: "{{riseberryd_go_arch}}"
-- name: upload {{riseberryd_bin}}
-  copy: src={{riseberryd_build_path}}/{{riseberryd_bin}} dest={{riseberryd_bin_path}} mode="u=rwx,g=rx,o=rx"
+- name: upload riseberryd
+  copy: src={{riseberryd_build_path}}/riseberryd dest={{riseberryd_bin_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
 - name: mkdir {{riseberryd_www_path}}
   file: path={{riseberryd_www_path}} state=directory mode="u=rwx,g=rx,o=rx"
