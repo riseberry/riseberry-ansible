@@ -1,0 +1,4 @@
+---
+- name: restart riseberryd
+  service: name=riseberryd state=restarted enabled=yes
+  sudo: true

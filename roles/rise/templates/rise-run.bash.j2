@@ -1,9 +1,0 @@
-#/usr/bin/bash
-until {{rise_bin_path}} \
-  -log.level=2 \
-  -assets.dir='{{rise_public_path}}' \
-  -sound.cmd='omxplayer {{rise_public_path}}/alarm.mp3' \
-  ; do
-  echo "rise crashed with code: $?. restarting ..." >&2
-  sleep 1
-done

@@ -1,0 +1,28 @@
+---
+- name: locate {{rispberryd_bin}} src
+  local_action: shell go list -f $(echo '((.Dir))' | tr '(' '{' | tr ')' '} ') {{riseberryd_go_pkg}}
+  register: risberryd_src
+- name: cross compile {{riseberryd_bin}}
+  local_action: shell go build -o {{riseberryd_build_path}}/{{riseberryd_bin}} {{riseberryd_go_pkg}}
+  environment:
+    GOOS: "{{riseberryd_go_os}}"
+    GOARCH: "{{riseberryd_go_arch}}"
+- name: upload {{riseberryd_bin}}
+  copy: src={{riseberryd_build_path}}/{{riseberryd_bin}} dest={{riseberryd_bin_path}} mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: mkdir {{riseberryd_www_path}}
+  file: path={{riseberryd_www_path}} state=directory mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: rsync www
+  synchronize: src={{risberryd_src.stdout}}/www/ dest={{riseberryd_www_path}}/ rsync_path="sudo rsync"
+- name: write {{riseberryd_initd_path}}
+  template: src=./{{riseberryd_initd_path}}.j2 dest={{riseberryd_initd_path}} mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: mkdir {{riseberryd_keepalive_path|dirname}}
+  file: path={{riseberryd_keepalive_path|dirname}} state=directory mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: write {{riseberryd_keepalive_path}}
+  template: src=./{{riseberryd_keepalive_path}}.j2 dest={{riseberryd_keepalive_path}} mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- command: /bin/true
+  notify: restart riseberryd
