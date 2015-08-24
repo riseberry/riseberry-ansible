@@ -1,0 +1,9 @@
+---
+- name: cross compile binary
+  local_action: shell go build -o rise github.com/felixge/rise
+  environment:
+    GOOS: linux
+    GOARCH: "{% if ansible_architecture == 'armv6l' %}arm{% else %}amd64{% endif %}" 
+  sudo: false
+- name: upload binary
+  copy: src=rise dest=/usr/local/bin/rise mode="u=rwx,g=rx,o=rx"
