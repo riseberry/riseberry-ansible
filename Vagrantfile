@@ -8,7 +8,6 @@ Vagrant.configure(2) do |config|
       ansible.extra_vars = {
       }
       ansible.playbook = "site.yml"
-      ansible.sudo = true
       ansible.verbose = "v"
   end
 end

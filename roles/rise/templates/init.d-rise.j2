@@ -1,0 +1,30 @@
+#!/bin/bash
+# /etc/init.d/rise
+
+### BEGIN INIT INFO
+# Provides:          rise
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: rise alarm clock
+# Description:       This service is used to manage a rise instance
+### END INIT INFO
+
+
+case "$1" in 
+    start)
+        echo "Starting rise"
+        nohup /etc/rise/run.bash >> /var/log/rise.log 2>&1 &
+        ;;
+    stop)
+        echo "Stopping rise"
+        sudo pkill -9 -g $(ps -p $(pgrep -f /usr/local/bin/rise) -o pgid=)
+        ;;
+    *)
+        echo "Usage: /etc/init.d/rise start|stop"
+        exit 1
+        ;;
+esac
+
+exit 0

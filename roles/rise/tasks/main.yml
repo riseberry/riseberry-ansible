@@ -4,6 +4,17 @@
   environment:
     GOOS: linux
     GOARCH: "{% if ansible_architecture == 'armv6l' %}arm{% else %}amd64{% endif %}" 
-  sudo: false
 - name: upload binary
   copy: src=build/rise dest=/usr/local/bin/rise mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: write init.d daemon script
+  template: src=init.d-rise.j2 dest=/etc/init.d/rise mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: create /etc/rise
+  file: path=/etc/rise state=directory mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- name: write run script
+  template: src=rise-run.bash dest=/etc/rise/run.bash mode="u=rwx,g=rx,o=rx"
+  sudo: true
+- command: /bin/true
+  notify: restart rise

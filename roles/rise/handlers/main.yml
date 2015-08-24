@@ -1,0 +1,4 @@
+---
+- name: restart rise
+  service: name=rise state=restarted enabled=yes
+  sudo: true
