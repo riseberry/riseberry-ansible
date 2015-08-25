@@ -3,25 +3,25 @@
   local_action: shell go list -f $(echo '((.Dir))' | tr '(' '{' | tr ')' '} ') {{riseberryd_go_pkg}}
   register: risberryd_src
 - name: cross compile risberryd
-  local_action: shell go build -o {{riseberryd_build_path}}/riseberryd {{riseberryd_go_pkg}}
+  local_action: shell go build -o {{riseberryd_build_path}}/riseberryd {{riseberryd_go_pkg}}/cmd/riseberryd
   environment:
     GOOS: "{{riseberryd_go_os}}"
     GOARCH: "{{riseberryd_go_arch}}"
 - name: upload riseberryd
   copy: src={{riseberryd_build_path}}/riseberryd dest={{riseberryd_bin_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
-- name: mkdir {{riseberryd_www_path}}
+- name: create www path
   file: path={{riseberryd_www_path}} state=directory mode="u=rwx,g=rx,o=rx"
   sudo: true
-- name: rsync www
+- name: rsync www assets
   synchronize: src={{risberryd_src.stdout}}/www/ dest={{riseberryd_www_path}}/ rsync_path="sudo rsync"
-- name: write {{riseberryd_initd_path}}
+- name: write initd script
   template: src=./{{riseberryd_initd_path}}.j2 dest={{riseberryd_initd_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
-- name: mkdir {{riseberryd_keepalive_path|dirname}}
+- name: create keepalive script dir
   file: path={{riseberryd_keepalive_path|dirname}} state=directory mode="u=rwx,g=rx,o=rx"
   sudo: true
-- name: write {{riseberryd_keepalive_path}}
+- name: write keepalive script
   template: src=./{{riseberryd_keepalive_path}}.j2 dest={{riseberryd_keepalive_path}} mode="u=rwx,g=rx,o=rx"
   sudo: true
 - command: /bin/true

@@ -1,8 +1,7 @@
 #/usr/bin/bash
 until {{riseberryd_bin_path}} \
-  -log.level=2 \
-  -assets.dir='{{riseberryd_www_path}}' \
-  -sound.cmd='omxplayer {{riseberryd_www_path}}/alarm.mp3' \
+  -http.dir='{{riseberryd_www_path}}' \
+  -sound.file='{{riseberryd_www_path}}/alarm.mp3' \
   ; do
   echo "crashed with code: $?. restarting ..." >&2
   sleep 1

@@ -3,8 +3,8 @@ riseberryd_go_os: linux
 riseberryd_go_arch: "{% if ansible_architecture == 'armv6l' %}arm{% else %}amd64{% endif %}" 
 riseberryd_go_pkg: github.com/riseberry/riseberryd
 riseberryd_build_path: build
-riseberryd_bin_path: /usr/local/riseberry/riseberryd
+riseberryd_bin_path: /usr/local/bin/riseberryd
 riseberryd_log_path: /var/log/riseberryd.log
 riseberryd_initd_path: /etc/init.d/riseberryd
-riseberryd_keepalive_path: /usr/local/riseberry/keepalive.bash
+riseberryd_keepalive_path: /usr/local/bin/riseberryd-keepalive.bash
 riseberryd_www_path: /srv/riseberry
