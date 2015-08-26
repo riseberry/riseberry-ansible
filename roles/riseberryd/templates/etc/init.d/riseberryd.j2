@@ -1,25 +1,25 @@
 #!/bin/bash
-# /etc/init.d/rise
+# /etc/init.d/riseberry
 
 ### BEGIN INIT INFO
-# Provides:          rise
+# Provides:          riseberry
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: rise alarm clock
-# Description:       This service is used to manage a rise instance
+# Short-Description: riseberry alarm clock
+# Description:       This service is used to manage a riseberry instance
 ### END INIT INFO
 
 
 case "$1" in 
     start)
-        echo "Starting rise"
+        echo "Starting riseberry"
         nohup {{riseberryd_keepalive_path}} >> {{riseberryd_log_path}} 2>&1 &
         ;;
     stop)
-        echo "Stopping rise"
-        sudo pkill -9 -g $(ps -p $(pgrep -f {{riseberryd_bin_path}}) -o pgid=)
+        echo "Stopping riseberry"
+        sudo pkill -f -9 riseberry
         ;;
     *)
         echo "Usage: /etc/init.d/rise start|stop"
